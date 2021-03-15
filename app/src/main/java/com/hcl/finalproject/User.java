@@ -1,29 +1,82 @@
 package com.hcl.finalproject;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable{
 
     private long id;
+    private String name;
     private String username;
     private String email;
     public Address address;
     public Address getAddress(){
         return address;
     }
-    public class Address {
+    public class Address implements Serializable {
+        private String street;
+        private String suite;
+        private String city;
+        private String zipcode;
+        public Geo geo;
+        public Geo getGeo(){return geo;}
+        public class Geo implements Serializable{
+            private String lat;
+            private String lng;
 
+            @Override
+            public String toString() {
+                return "Geo{" +
+                        "lat='" + lat + '\'' +
+                        ", lng='" + lng + '\'' +
+                        '}';
+            }
+        }
+
+        @Override
+        public String toString() {
+            return "Address{" +
+                    "street='" + street + '\'' +
+                    ", suite='" + suite + '\'' +
+                    ", city='" + city + '\'' +
+                    ", zipcode='" + zipcode + '\'' +
+                    ", geo=" + geo +
+                    '}';
+        }
+    }
+    private String phone;
+    private String website;
+    public Company company;
+    public Company getCompany(){return company;}
+    public class Company implements Serializable{
+        private String name;
+        private String catchPhrase;
+        private String bs;
+
+        @Override
+        public String toString() {
+            return "Company{" +
+                    "name='" + name + '\'' +
+                    ", catchPhrase='" + catchPhrase + '\'' +
+                    ", bs='" + bs + '\'' +
+                    '}';
+        }
     }
 
-    public String getUsername() {
-        return username;
+    public String getName() {
+        return name;
     }
 
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
+                ", name='" + name + '\'' +
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", address=" + address +
+                ", phone='" + phone + '\'' +
+                ", website='" + website + '\'' +
+                ", company=" + company +
                 '}';
     }
 }

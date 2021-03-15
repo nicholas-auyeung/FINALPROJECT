@@ -1,6 +1,7 @@
 package com.hcl.finalproject;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +28,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
-        holder.getTextView().setText(user_array[position].getUsername());
+        holder.getTextView().setText(user_array[position].getName());
     }
 
     @Override
@@ -35,7 +36,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         return user_array.length;
     }
 
-    public static class UserViewHolder extends RecyclerView.ViewHolder{
+    public static class UserViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         private TextView textView;
         private CardView cardView;
@@ -44,9 +45,18 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             super(view);
             textView = (TextView) view.findViewById(R.id.user_text);
             cardView = (CardView) view.findViewById(R.id.user_card);
+            view.findViewById(R.id.user_card).setOnClickListener(this);
         }
         public TextView getTextView(){
             return textView;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(context, ProfileActivity.class);
+            intent.putExtra("user_selected", user_array[getAdapterPosition()]);
+            context.startActivity(intent);
+
         }
     }
 
