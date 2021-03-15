@@ -2,6 +2,8 @@ package com.hcl.finalproject;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -46,9 +48,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String data = dataSource.getData();
         Gson gson = new Gson();
         users = gson.fromJson(data, User[].class);
-        for(User u : users){
-            Log.i("USER", u.toString());
-        }
 
         findViewById(R.id.google_sign_out_button).setOnClickListener(this);
 
@@ -61,6 +60,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+
+        UserAdapter userAdapter = new UserAdapter(users, this);
+
+        recyclerView.setAdapter(userAdapter);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
     }
 
