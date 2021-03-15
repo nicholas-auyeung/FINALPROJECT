@@ -69,6 +69,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         try{
             GoogleSignInAccount account = completeTask.getResult(ApiException.class);
             Intent mainIntent = new Intent(this, MainActivity.class);
+            mainIntent.putExtra("sign_in_name", account.getDisplayName());
             startActivity(mainIntent);
 
         }catch(ApiException e){
