@@ -26,9 +26,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private GoogleSignInClient mGoogleSignInClient;
 
-    Datasource dataSource;
+    private Datasource dataSource;
 
-    User[] users;
+    private User[] users;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,16 +37,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         try {
             DataLock.getInstance().setObj(Thread.currentThread());
-            dataSource = new Datasource(this);
+            dataSource = new Datasource();
             DataLock.getInstance().getJSONLock();
-            Log.i("MYSTRING", dataSource.getMydata());
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        Log.i("MYSTRING 2", dataSource.getMydata());
         String data = dataSource.getData();
-        Log.i("JSON", data);
         Gson gson = new Gson();
         users = gson.fromJson(data, User[].class);
         for(User u : users){
