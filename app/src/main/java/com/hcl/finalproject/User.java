@@ -4,24 +4,28 @@ import java.io.Serializable;
 
 public class User implements Serializable{
 
-    private long id;
-    private String name;
-    private String username;
-    private String email;
-    public Address address;
+    private String id = "";
+    private String name = "";
+    private String username = "";
+    private String email = "";
+    public Address address = new Address();
     public Address getAddress(){
         return address;
     }
     public class Address implements Serializable {
-        private String street;
-        private String suite;
-        private String city;
-        private String zipcode;
-        public Geo geo;
+        private String street = "";
+        private String suite = "";
+        private String city = "";
+        private String zipcode = "";
+        public Address() {
+            super();
+        }
+
+        public Geo geo = new Geo();
         public Geo getGeo(){return geo;}
         public class Geo implements Serializable{
-            private String lat;
-            private String lng;
+            private String lat = "";
+            private String lng = "";
 
             public String getLat() {
                 return lat;
@@ -29,6 +33,10 @@ public class User implements Serializable{
 
             public String getLng() {
                 return lng;
+            }
+
+            public Geo() {
+                super();
             }
 
             @Override
@@ -67,14 +75,14 @@ public class User implements Serializable{
                     '}';
         }
     }
-    private String phone;
-    private String website;
-    public Company company;
+    private String phone = "";
+    private String website = "";
+    public Company company = new Company();
     public Company getCompany(){return company;}
     public class Company implements Serializable{
-        private String name;
-        private String catchPhrase;
-        private String bs;
+        private String name = "";
+        private String catchPhrase = "";
+        private String bs = "";
 
         public String getName() {
             return name;
@@ -88,6 +96,10 @@ public class User implements Serializable{
             return bs;
         }
 
+        public Company() {
+            super();
+        }
+
         @Override
         public String toString() {
             return "Company{" +
@@ -98,7 +110,7 @@ public class User implements Serializable{
         }
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
@@ -136,7 +148,11 @@ public class User implements Serializable{
                 '}';
     }
 
-    public User(long id, String name, String email) {
+    public User() {
+        super();
+    }
+
+    public User(String id, String name, String email) {
         this.id = id;
         this.name = name;
         this.email = email;

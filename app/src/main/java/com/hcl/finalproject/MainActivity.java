@@ -23,6 +23,7 @@ import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Semaphore;
@@ -33,12 +34,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Datasource dataSource;
 
-    private List<User> users;
+    private User signInUser;
+
+    private List<User> users = new ArrayList<>();
 
     private UserAdapter userAdapter;
 
     private RecyclerView recyclerView;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,11 +68,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
         if(acct != null) {
-            Log.i("GOOGLENAME", acct.getDisplayName());
-            Log.i("GOOGLEEMAIL", acct.getEmail());
-            Log.i("GOOGLEID", acct.getId());
-
-
+            signInUser = new User(acct.getId(), acct.getDisplayName(), acct.getEmail());
+            users.add(signInUser);
         }
 
     }
@@ -95,16 +94,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(signOutIntent);
     }
 
-
-
-
     public void setRecyclerView(){
 
         String data = dataSource.getData();
 
         Gson gson = new Gson();
 
-        users = Arrays.asList((gson.fromJson(data, User[].class)));
+        users.addAll(Arrays.asList((gson.fromJson(data, User[].class))));
 
         recyclerView = findViewById(R.id.recycler_view);
 
