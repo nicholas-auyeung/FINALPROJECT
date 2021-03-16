@@ -13,10 +13,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.w3c.dom.Text;
 
+import java.util.List;
+
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
 
     private static Context context;
-    private static User[] user_array;
+    private static List<User> userList;
 
     @NonNull
     @Override
@@ -28,12 +30,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
-        holder.getTextView().setText(user_array[position].getName());
+        holder.getTextView().setText(userList.get(position).getName());
     }
 
     @Override
     public int getItemCount() {
-        return user_array.length;
+
+        return userList.size();
     }
 
     public static class UserViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -54,14 +57,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(context, ProfileActivity.class);
-            intent.putExtra("user_selected", user_array[getAdapterPosition()]);
+            intent.putExtra("user_selected", userList.get(getAdapterPosition()));
             context.startActivity(intent);
 
         }
     }
 
-    public UserAdapter(User[] dataSet, Context current){
+    public UserAdapter(List<User> dataSet, Context current){
         this.context = current;
-        user_array = dataSet;
+        userList = dataSet;
     }
 }

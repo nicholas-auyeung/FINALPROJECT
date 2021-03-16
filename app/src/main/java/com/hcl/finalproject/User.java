@@ -135,4 +135,10 @@ public class User implements Serializable{
                 ", company=" + company +
                 '}';
     }
+
+    public User(long id, String name, String email) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+    }
 }

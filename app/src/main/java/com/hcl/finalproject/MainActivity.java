@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -22,6 +23,8 @@ import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Semaphore;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
@@ -30,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Datasource dataSource;
 
-    private User[] users;
+    private List<User> users;
 
     private UserAdapter userAdapter;
 
@@ -60,6 +63,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
+        if(acct != null) {
+            Log.i("GOOGLENAME", acct.getDisplayName());
+            Log.i("GOOGLEEMAIL", acct.getEmail());
+            Log.i("GOOGLEID", acct.getId());
+
+
+        }
 
     }
 
@@ -92,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Gson gson = new Gson();
 
-        users = gson.fromJson(data, User[].class);
+        users = Arrays.asList((gson.fromJson(data, User[].class)));
 
         recyclerView = findViewById(R.id.recycler_view);
 
