@@ -10,53 +10,53 @@ public class UserParser implements ObjectParser{
 
     public List<UserAttribute> objectToList(User user){
 
-        String attributeName = "Name";
+        String attributeName = "Name:";
         List<String> attributeNameItems = new ArrayList<>();
         attributeNameItems.add(user.getName());
 
-        String attributeUsername = "Username";
+        String attributeUsername = "Username:";
         List<String> attributeUsernameItems = new ArrayList<>();
         attributeUsernameItems.add(user.getUsername());
 
-        String attributeEmail = "Email";
+        String attributeEmail = "Email:";
         List<String> attributeEmailItems = new ArrayList<>();
         attributeEmailItems.add(user.getEmail());
 
         String attributeAddress = "Address";
         List<String> attributeAddressItems = new ArrayList<>();
 
-        String attributeStreet = "Street";
+        String attributeStreet = "Street:";
         List<String> attributeStreetItems = new ArrayList<>();
         attributeStreetItems.add(user.getAddress().getStreet());
 
-        String attributeSuite = "Suite";
+        String attributeSuite = "Suite:";
         List<String> attributeSuiteItems = new ArrayList<>();
         attributeSuiteItems.add(user.getAddress().getSuite());
 
-        String attributeCity = "City";
+        String attributeCity = "City:";
         List<String> attributeCityItems = new ArrayList<>();
         attributeCityItems.add(user.getAddress().getCity());
 
-        String attributeZipCode = "Zip Code";
+        String attributeZipCode = "Zip Code:";
         List<String> attributeZipCodeItems = new ArrayList<>();
         attributeZipCodeItems.add(user.getAddress().getZipcode());
 
         String attributeGeo = "Geo";
         List<String> attributeGeoItems = new ArrayList<>();
 
-        String attributeLat = "Lat";
+        String attributeLat = "Lat:";
         List<String> attributeLatItems = new ArrayList<>();
         attributeLatItems.add(user.getAddress().getGeo().getLat());
 
-        String attributeLng = "Lng";
+        String attributeLng = "Lng:";
         List<String> attributeLngItems = new ArrayList<>();
         attributeLngItems.add(user.getAddress().getGeo().getLng());
 
-        String attributePhone = "Phone";
+        String attributePhone = "Phone:";
         List<String> attributePhoneItems = new ArrayList<>();
         attributePhoneItems.add(user.getPhone());
 
-        String attributeWebsite = "Website";
+        String attributeWebsite = "Website:";
         List<String> attributeWebsiteItems = new ArrayList<>();
         attributeWebsiteItems.add(user.getWebsite());
 
@@ -67,11 +67,11 @@ public class UserParser implements ObjectParser{
         List<String> attributeCNameItems = new ArrayList<>();
         attributeCNameItems.add(user.getCompany().getName());
 
-        String attributeCatchPhrase = "Catch Phrase";
+        String attributeCatchPhrase = "Catch Phrase:";
         List<String> attributeCatchPhraseItems = new ArrayList<>();
         attributeCatchPhraseItems.add(user.getCompany().getCatchPhrase());
 
-        String attributeBS = "BS";
+        String attributeBS = "BS:";
         List<String> attributeBSItems = new ArrayList<>();
         attributeBSItems.add(user.getCompany().getBs());
 

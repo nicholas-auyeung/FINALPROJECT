@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.w3c.dom.Text;
 
+import java.util.List;
+
 public class UserProfileAdapter extends RecyclerView.Adapter<UserProfileAdapter.UserProfileViewHolder> {
 
-    private static Context context;
-
-    private static String[] user_profile_array;
+    List<UserAttribute> userAttributeList;
 
     @NonNull
     @Override
@@ -27,30 +27,42 @@ public class UserProfileAdapter extends RecyclerView.Adapter<UserProfileAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull UserProfileAdapter.UserProfileViewHolder holder, int position) {
-        holder.getTextView().setText(user_profile_array[position]);
+
+        UserAttribute userAttribute = userAttributeList.get(position);
+        String userAttributeName = userAttribute.getAttribute();
+        List<String> userAttributeDetails = userAttribute.getAttributeDetails();
+
+        holder.getUserProfileTextView().setText(userAttributeName);
+
+        UserProfileDetailsAdapter userProfileDetailsAdapter = new UserProfileDetailsAdapter(userAttributeDetails);
+        holder.userProfileRecyclerView.setAdapter(userProfileDetailsAdapter);
+
+
     }
 
     @Override
     public int getItemCount() {
-        return user_profile_array.length;
+        return userAttributeList.size();
     }
 
     public static class UserProfileViewHolder extends RecyclerView.ViewHolder{
 
-        TextView textView;
+        TextView userProfileTextView;
+        RecyclerView userProfileRecyclerView;
 
         public UserProfileViewHolder(@NonNull View view) {
             super(view);
-            textView = (TextView) view.findViewById(R.id.user_profile_text);
+            userProfileTextView = view.findViewById(R.id.userProfileHeader);
+            userProfileRecyclerView = view.findViewById(R.id.userProfileRecyclerView);
         }
 
-        public TextView getTextView(){
-            return textView;
+        public TextView getUserProfileTextView(){
+            return userProfileTextView;
         }
     }
 
-    public UserProfileAdapter(String[] dataSet, Context current){
-        this.context = current;
-        user_profile_array = dataSet;
+    public UserProfileAdapter(List<UserAttribute> userAttributeList){
+
+        this.userAttributeList = userAttributeList;
     }
 }
