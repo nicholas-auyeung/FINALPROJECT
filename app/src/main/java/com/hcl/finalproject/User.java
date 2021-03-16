@@ -23,6 +23,14 @@ public class User implements Serializable{
             private String lat;
             private String lng;
 
+            public String getLat() {
+                return lat;
+            }
+
+            public String getLng() {
+                return lng;
+            }
+
             @Override
             public String toString() {
                 return "Geo{" +
@@ -30,6 +38,22 @@ public class User implements Serializable{
                         ", lng='" + lng + '\'' +
                         '}';
             }
+        }
+
+        public String getStreet() {
+            return street;
+        }
+
+        public String getSuite() {
+            return suite;
+        }
+
+        public String getCity() {
+            return city;
+        }
+
+        public String getZipcode() {
+            return zipcode;
         }
 
         @Override
@@ -52,6 +76,18 @@ public class User implements Serializable{
         private String catchPhrase;
         private String bs;
 
+        public String getName() {
+            return name;
+        }
+
+        public String getCatchPhrase() {
+            return catchPhrase;
+        }
+
+        public String getBs() {
+            return bs;
+        }
+
         @Override
         public String toString() {
             return "Company{" +
@@ -62,8 +98,28 @@ public class User implements Serializable{
         }
     }
 
+    public long getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getWebsite() {
+        return website;
     }
 
     @Override

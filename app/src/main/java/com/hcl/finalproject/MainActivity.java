@@ -32,22 +32,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private User[] users;
 
+    private UserAdapter userAdapter;
+
+    private RecyclerView recyclerView;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         try {
-            DataLock.getInstance().setObj(Thread.currentThread());
-            dataSource = new Datasource();
-            DataLock.getInstance().getJSONLock();
+            dataSource = new Datasource(MainActivity.this, this);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        String data = dataSource.getData();
-        Gson gson = new Gson();
-        users = gson.fromJson(data, User[].class);
 
         findViewById(R.id.google_sign_out_button).setOnClickListener(this);
 
@@ -60,14 +60,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
-
-        UserAdapter userAdapter = new UserAdapter(users, this);
-
-        recyclerView.setAdapter(userAdapter);
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
     }
 
@@ -89,6 +81,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void handleSignOut(){
         Intent signOutIntent = new Intent(this, LoginActivity.class);
         startActivity(signOutIntent);
+    }
+
+
+
+
+    public void setRecyclerView(){
+
+        String data = dataSource.getData();
+
+        Gson gson = new Gson();
+
+        users = gson.fromJson(data, User[].class);
+
+        recyclerView = findViewById(R.id.recycler_view);
+
+        userAdapter = new UserAdapter(users, this);
+
+        recyclerView.setAdapter(userAdapter);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
     }
 
 }
