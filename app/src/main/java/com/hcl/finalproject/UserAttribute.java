@@ -1,13 +1,14 @@
 package com.hcl.finalproject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserAttribute {
 
     private String attribute;
-    private List<String> attributeDetails;
+    private String attributeDetails;
 
-    public UserAttribute(String attribute, List<String> attributeDetails) {
+    public UserAttribute(String attribute, String attributeDetails) {
         this.attribute = attribute;
         this.attributeDetails = attributeDetails;
     }
@@ -16,7 +17,7 @@ public class UserAttribute {
         return attribute;
     }
 
-    public List<String> getAttributeDetails() {
+    public String getAttributeDetails() {
         return attributeDetails;
     }
 
@@ -24,15 +25,7 @@ public class UserAttribute {
         this.attribute = attribute;
     }
 
-    public void setAttributeDetails(List<String> attributeDetails) {
+    public void setAttributeDetails(String attributeDetails) {
         this.attributeDetails = attributeDetails;
-    }
-
-    @Override
-    public String toString() {
-        return "UserAttribute{" +
-                "attribute='" + attribute + '\'' +
-                ", attributeDetails=" + attributeDetails +
-                '}';
     }
 }

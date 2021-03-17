@@ -6,14 +6,14 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/user_profile_attribute"
+        android:id="@+id/user_edit_profile_attribute"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="TextView"
         android:padding="8dp"/>
 
-    <TextView
-        android:id="@+id/user_profile_item"
+    <EditText
+        android:id="@+id/user_edit_profile_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="TextView"

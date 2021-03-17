@@ -1,6 +1,7 @@
 package com.hcl.finalproject;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,7 @@ import java.util.List;
 public class UserProfileAdapter extends RecyclerView.Adapter<UserProfileAdapter.UserProfileViewHolder> {
 
     private List<UserAttribute> userAttributeList;
-    private Boolean edit;
+
 
     @NonNull
     @Override
@@ -28,22 +29,12 @@ public class UserProfileAdapter extends RecyclerView.Adapter<UserProfileAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull UserProfileAdapter.UserProfileViewHolder holder, int position) {
-
-        UserAttribute userAttribute = userAttributeList.get(position);
-        String userAttributeName = userAttribute.getAttribute();
-        List<String> userAttributeDetails = userAttribute.getAttributeDetails();
-
-        holder.getUserProfileTextView().setText(userAttributeName);
-
-        if(edit) {
-            UserProfileEditDetailsAdapter userProfileEditDetailsAdapter = new UserProfileEditDetailsAdapter(userAttributeDetails);
-            holder.userProfileRecyclerView.setAdapter(userProfileEditDetailsAdapter);
+        holder.getAttribute().setText(userAttributeList.get(position).getAttribute());
+        if(userAttributeList.get(position).getAttributeDetails().compareTo("FALSE") == 0){
+            holder.getItem().setVisibility(View.GONE);
         }else{
-            UserProfileDetailsAdapter userProfileDetailsAdapter = new UserProfileDetailsAdapter(userAttributeDetails);
-            holder.userProfileRecyclerView.setAdapter(userProfileDetailsAdapter);
+            holder.getItem().setText(userAttributeList.get(position).getAttributeDetails());
         }
-
-
     }
 
     @Override
@@ -51,24 +42,27 @@ public class UserProfileAdapter extends RecyclerView.Adapter<UserProfileAdapter.
         return userAttributeList.size();
     }
 
-    public static class UserProfileViewHolder extends RecyclerView.ViewHolder{
+    public class UserProfileViewHolder extends RecyclerView.ViewHolder{
 
-        TextView userProfileTextView;
-        RecyclerView userProfileRecyclerView;
+        private TextView attribute;
+        private TextView item;
 
         public UserProfileViewHolder(@NonNull View view) {
             super(view);
-            userProfileTextView = view.findViewById(R.id.userProfileHeader);
-            userProfileRecyclerView = view.findViewById(R.id.userProfileRecyclerView);
+            attribute = (TextView) view.findViewById(R.id.user_profile_attribute);
+            item = (TextView) view.findViewById(R.id.user_profile_item);
         }
 
-        public TextView getUserProfileTextView(){
-            return userProfileTextView;
+        public TextView getAttribute() {
+            return attribute;
+        }
+
+        public TextView getItem() {
+            return item;
         }
     }
 
-    public UserProfileAdapter(List<UserAttribute> userAttributeList, Boolean edit){
-        this.edit = edit;
+    public UserProfileAdapter(List<UserAttribute> userAttributeList) {
         this.userAttributeList = userAttributeList;
     }
 }
