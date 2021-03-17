@@ -5,7 +5,9 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -18,11 +20,15 @@ public class ProfileActivity extends AppCompatActivity {
 
     private ObjectParser objectParser;
 
-    String[] userProfileAttributes;
+    private String loggedInUser;
 
-    RecyclerView attributeRecyclerView;
+    private String[] userProfileAttributes;
 
-    List<UserAttribute> userAttributeList;
+    private RecyclerView attributeRecyclerView;
+
+    private List<UserAttribute> userAttributeList;
+
+    private UserProfileAdapter userProfileAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +41,19 @@ public class ProfileActivity extends AppCompatActivity {
         Intent intent = getIntent();
         User user = (User) intent.getSerializableExtra("user_selected");
 
-        //add google logic
-
         userAttributeList = objectParser.objectToList(user);
 
         attributeRecyclerView = findViewById(R.id.attributeRecyclerView);
-        UserProfileAdapter userProfileAdapter = new UserProfileAdapter(userAttributeList);
+
+        SharedPreferences sharedPreferences = getSharedPreferences("LOGGED IN" , Context.MODE_PRIVATE);
+
+        loggedInUser = sharedPreferences.getString("loggedInUser", "");
+
+        if(user.getName().compareTo(loggedInUser) == 0) {
+            userProfileAdapter = new UserProfileAdapter(userAttributeList, true);
+        }else{
+            userProfileAdapter = new UserProfileAdapter(userAttributeList, false);
+        }
         attributeRecyclerView.setAdapter(userProfileAdapter);
         attributeRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 

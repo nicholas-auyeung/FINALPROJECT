@@ -59,7 +59,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             Intent intent = new Intent(context, ProfileActivity.class);
             intent.putExtra("user_selected", userList.get(getAdapterPosition()));
             context.startActivity(intent);
-
         }
     }
 

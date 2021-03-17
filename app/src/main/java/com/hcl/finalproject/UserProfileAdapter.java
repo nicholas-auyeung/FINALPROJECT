@@ -15,7 +15,8 @@ import java.util.List;
 
 public class UserProfileAdapter extends RecyclerView.Adapter<UserProfileAdapter.UserProfileViewHolder> {
 
-    List<UserAttribute> userAttributeList;
+    private List<UserAttribute> userAttributeList;
+    private Boolean edit;
 
     @NonNull
     @Override
@@ -34,8 +35,13 @@ public class UserProfileAdapter extends RecyclerView.Adapter<UserProfileAdapter.
 
         holder.getUserProfileTextView().setText(userAttributeName);
 
-        UserProfileDetailsAdapter userProfileDetailsAdapter = new UserProfileDetailsAdapter(userAttributeDetails);
-        holder.userProfileRecyclerView.setAdapter(userProfileDetailsAdapter);
+        if(edit) {
+            UserProfileEditDetailsAdapter userProfileEditDetailsAdapter = new UserProfileEditDetailsAdapter(userAttributeDetails);
+            holder.userProfileRecyclerView.setAdapter(userProfileEditDetailsAdapter);
+        }else{
+            UserProfileDetailsAdapter userProfileDetailsAdapter = new UserProfileDetailsAdapter(userAttributeDetails);
+            holder.userProfileRecyclerView.setAdapter(userProfileDetailsAdapter);
+        }
 
 
     }
@@ -61,8 +67,8 @@ public class UserProfileAdapter extends RecyclerView.Adapter<UserProfileAdapter.
         }
     }
 
-    public UserProfileAdapter(List<UserAttribute> userAttributeList){
-
+    public UserProfileAdapter(List<UserAttribute> userAttributeList, Boolean edit){
+        this.edit = edit;
         this.userAttributeList = userAttributeList;
     }
 }
