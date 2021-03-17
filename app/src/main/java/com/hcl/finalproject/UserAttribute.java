@@ -28,4 +28,12 @@ public class UserAttribute {
     public void setAttributeDetails(String attributeDetails) {
         this.attributeDetails = attributeDetails;
     }
+
+    @Override
+    public String toString() {
+        return "UserAttribute{" +
+                "attribute='" + attribute + '\'' +
+                ", attributeDetails='" + attributeDetails + '\'' +
+                '}';
+    }
 }

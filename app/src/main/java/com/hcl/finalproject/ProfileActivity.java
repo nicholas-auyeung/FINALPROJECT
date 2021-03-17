@@ -30,6 +30,8 @@ public class ProfileActivity extends AppCompatActivity{
 
     private List<UserAttribute> userAttributeList;
 
+    private UserProfileEditAdapter userProfileEditAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_profile);
@@ -49,7 +51,7 @@ public class ProfileActivity extends AppCompatActivity{
         loggedInUser = sharedPreferences.getString("loggedInUser", "");
 
         if(user.getName().compareTo(loggedInUser) == 0) {
-            UserProfileEditAdapter userProfileEditAdapter = new UserProfileEditAdapter(userAttributeList);
+            userProfileEditAdapter = new UserProfileEditAdapter(userAttributeList);
             attributeRecyclerView.setAdapter(userProfileEditAdapter);
 
         }else{
@@ -71,7 +73,7 @@ public class ProfileActivity extends AppCompatActivity{
         int id = item.getItemId();
 
         if(id == R.id.updateButton){
-
+            Log.i("UPDATED", String.valueOf(userProfileEditAdapter.getUserAttributeList()));
 
         }
         return super.onOptionsItemSelected(item);

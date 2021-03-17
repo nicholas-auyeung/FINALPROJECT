@@ -37,6 +37,7 @@ public class UserProfileEditAdapter extends RecyclerView.Adapter<UserProfileEdit
         if(userAttributeList.get(position).getAttributeDetails().compareTo("FALSE") == 0){
             holder.getEditItem().setVisibility(View.GONE);
         }else{
+            holder.editItem.setTag(position);
             holder.getEditItem().setText(userAttributeList.get(position).getAttributeDetails());
         }
 
@@ -56,6 +57,24 @@ public class UserProfileEditAdapter extends RecyclerView.Adapter<UserProfileEdit
             super(view);
             attribute = (TextView) view.findViewById(R.id.user_edit_profile_attribute);
             editItem = (EditText) view.findViewById(R.id.user_edit_profile_item);
+            editItem.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if(editItem.getTag() != null){
+                        userAttributeList.get((int) editItem.getTag()).setAttributeDetails(s.toString());
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            });
         }
 
         public TextView getAttribute() {
@@ -69,5 +88,9 @@ public class UserProfileEditAdapter extends RecyclerView.Adapter<UserProfileEdit
 
     public UserProfileEditAdapter(List<UserAttribute> userAttributeList) {
         this.userAttributeList = userAttributeList;
+    }
+
+    public List<UserAttribute> getUserAttributeList() {
+        return userAttributeList;
     }
 }
