@@ -51,13 +51,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        try {
-            dataSource = new Datasource(MainActivity.this, this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
         findViewById(R.id.google_sign_out_button).setOnClickListener(this);
 
     }
@@ -65,6 +58,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStart(){
         super.onStart();
+
+        try {
+            dataSource = new Datasource(MainActivity.this, this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
@@ -74,7 +74,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         SharedPreferences sharedPreferences = getSharedPreferences("LOGGED IN", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-
 
         if(acct != null && sharedPreferences.getString("EDIT", "FALSE").compareTo("FALSE") == 0) {
             editor.putString("loggedInUser", acct.getDisplayName());
@@ -86,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             editor.commit();
             Intent intent = getIntent();
             User updatedUser = (User) intent.getSerializableExtra("user_updated");
-            users.set(0, updatedUser);
+            users.add(updatedUser);
             Toast.makeText(this, "User successfully updated", Toast.LENGTH_LONG);
         }
 
