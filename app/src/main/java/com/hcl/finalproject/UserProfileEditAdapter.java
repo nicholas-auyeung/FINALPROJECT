@@ -21,7 +21,7 @@ import java.util.List;
 
 public class UserProfileEditAdapter extends RecyclerView.Adapter<UserProfileEditAdapter.UserProfileEditViewHolder> {
 
-    private List<UserAttribute> userAttributeList;
+    private static List<UserAttribute> userAttributeList;
 
     @NonNull
     @Override
@@ -87,7 +87,9 @@ public class UserProfileEditAdapter extends RecyclerView.Adapter<UserProfileEdit
     }
 
     public UserProfileEditAdapter(List<UserAttribute> userAttributeList) {
-        this.userAttributeList = userAttributeList;
+        if(this.userAttributeList == null) {
+            this.userAttributeList = userAttributeList;
+        }
         notifyDataSetChanged();
     }
 

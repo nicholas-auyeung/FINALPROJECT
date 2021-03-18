@@ -51,6 +51,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        try {
+            dataSource = new Datasource(MainActivity.this, this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         findViewById(R.id.google_sign_out_button).setOnClickListener(this);
 
     }
@@ -58,12 +64,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStart(){
         super.onStart();
-
-        try {
-            dataSource = new Datasource(MainActivity.this, this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
