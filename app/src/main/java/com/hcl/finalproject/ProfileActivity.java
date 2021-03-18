@@ -39,11 +39,14 @@ public class ProfileActivity extends AppCompatActivity{
 
     private User user;
 
+    private String mState = "";
+
+    private MenuItem updateButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_profile);
         super.onCreate(savedInstanceState);
-
         attributeRecyclerView = findViewById(R.id.recycler_view_profile);
 
         objectParser = new UserParser();
@@ -62,17 +65,36 @@ public class ProfileActivity extends AppCompatActivity{
             attributeRecyclerView.setAdapter(userProfileEditAdapter);
 
         }else{
+            mState = "HIDE_MENU";
+            invalidateOptionsMenu();
             UserProfileAdapter userProfileAdapter = new UserProfileAdapter(userAttributeList);
             attributeRecyclerView.setAdapter(userProfileAdapter);
             attributeRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
 
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.menu_profile, menu);
+        updateButton = menu.findItem(R.id.updateButton);
         return super.onCreateOptionsMenu(menu);
+
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        if(mState.compareTo("HIDE_MENU") == 0){
+            updateButton.setVisible(false);
+        }
+        return true;
     }
 
     @Override
@@ -93,6 +115,7 @@ public class ProfileActivity extends AppCompatActivity{
             startActivity(intent);
 
         }
+
         return super.onOptionsItemSelected(item);
     }
 
