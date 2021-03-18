@@ -86,7 +86,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent intent = getIntent();
             User updatedUser = (User) intent.getSerializableExtra("user_updated");
             users.add(updatedUser);
-            Toast.makeText(this, "User successfully updated", Toast.LENGTH_LONG);
+            Toast.makeText(this, "User successfully updated", Toast.LENGTH_LONG).show();
+
         }
 
     }
