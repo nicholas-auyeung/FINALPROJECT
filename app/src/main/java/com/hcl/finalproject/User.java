@@ -35,6 +35,14 @@ public class User implements Serializable{
                 return lng;
             }
 
+            public void setLat(String lat) {
+                this.lat = lat;
+            }
+
+            public void setLng(String lng) {
+                this.lng = lng;
+            }
+
             public Geo() {
                 super();
             }
@@ -62,6 +70,22 @@ public class User implements Serializable{
 
         public String getZipcode() {
             return zipcode;
+        }
+
+        public void setStreet(String street) {
+            this.street = street;
+        }
+
+        public void setSuite(String suite) {
+            this.suite = suite;
+        }
+
+        public void setCity(String city) {
+            this.city = city;
+        }
+
+        public void setZipcode(String zipcode) {
+            this.zipcode = zipcode;
         }
 
         @Override
@@ -94,6 +118,18 @@ public class User implements Serializable{
 
         public String getBs() {
             return bs;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public void setCatchPhrase(String catchPhrase) {
+            this.catchPhrase = catchPhrase;
+        }
+
+        public void setBs(String bs) {
+            this.bs = bs;
         }
 
         public Company() {
@@ -134,6 +170,38 @@ public class User implements Serializable{
         return website;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -156,5 +224,16 @@ public class User implements Serializable{
         this.id = id;
         this.name = name;
         this.email = email;
+    }
+
+    public User(String id, String name, String username, String email, Address address, String phone, String website, Company company) {
+        this.id = id;
+        this.name = name;
+        this.username = username;
+        this.email = email;
+        this.address = address;
+        this.phone = phone;
+        this.website = website;
+        this.company = company;
     }
 }

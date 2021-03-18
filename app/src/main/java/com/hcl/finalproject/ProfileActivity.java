@@ -9,16 +9,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ProfileActivity extends AppCompatActivity{
 
@@ -32,6 +37,8 @@ public class ProfileActivity extends AppCompatActivity{
 
     private UserProfileEditAdapter userProfileEditAdapter;
 
+    private User user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_profile);
@@ -42,7 +49,7 @@ public class ProfileActivity extends AppCompatActivity{
         objectParser = new UserParser();
 
         Intent intent = getIntent();
-        User user = (User) intent.getSerializableExtra("user_selected");
+        user = (User) intent.getSerializableExtra("user_selected");
 
         userAttributeList = objectParser.objectToList(user);
 
@@ -70,10 +77,20 @@ public class ProfileActivity extends AppCompatActivity{
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
+
         int id = item.getItemId();
 
         if(id == R.id.updateButton){
             Log.i("UPDATED", String.valueOf(userProfileEditAdapter.getUserAttributeList()));
+            SharedPreferences sharedPreferences = getSharedPreferences("LOGGED IN", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("EDIT", "TRUE");
+            editor.commit();
+            user = objectParser.updateUser(user, userProfileEditAdapter.getUserAttributeList());
+            Log.i("UPDATED USER", user.toString());
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("user_updated", user);
+            startActivity(intent);
 
         }
         return super.onOptionsItemSelected(item);

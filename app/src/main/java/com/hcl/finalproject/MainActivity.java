@@ -9,8 +9,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -27,6 +29,7 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Semaphore;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
@@ -68,13 +71,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
-        if(acct != null) {
-            SharedPreferences sharedPreferences = getSharedPreferences("LOGGED IN", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        SharedPreferences sharedPreferences = getSharedPreferences("LOGGED IN", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+
+        if(acct != null && sharedPreferences.getString("EDIT", "FALSE").compareTo("FALSE") == 0) {
             editor.putString("loggedInUser", acct.getDisplayName());
             editor.commit();
             signInUser = new User(acct.getId(), acct.getDisplayName(), acct.getEmail());
             users.add(signInUser);
+        }else{
+            editor.putString("EDIT", "FALSE");
+            editor.commit();
+            Intent intent = getIntent();
+            User updatedUser = (User) intent.getSerializableExtra("user_updated");
+            users.set(0, updatedUser);
+            Toast.makeText(this, "User successfully updated", Toast.LENGTH_LONG);
         }
 
     }

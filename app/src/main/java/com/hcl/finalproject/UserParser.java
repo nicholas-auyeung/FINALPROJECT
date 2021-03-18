@@ -2,7 +2,9 @@ package com.hcl.finalproject;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class UserParser implements ObjectParser{
 
@@ -85,5 +87,26 @@ public class UserParser implements ObjectParser{
 
         return userAttributeList;
     }
+
+    @Override
+    public User updateUser(User user, List<UserAttribute> userAttributeList) {
+        user.setName(userAttributeList.get(0).getAttributeDetails());
+        user.setUsername(userAttributeList.get(1).getAttributeDetails());
+        user.setEmail(userAttributeList.get(2).getAttributeDetails());
+        user.getAddress().setStreet(userAttributeList.get(4).getAttributeDetails());
+        user.getAddress().setSuite(userAttributeList.get(5).getAttributeDetails());
+        user.getAddress().setCity(userAttributeList.get(6).getAttributeDetails());
+        user.getAddress().setZipcode(userAttributeList.get(7).getAttributeDetails());
+        user.getAddress().getGeo().setLat(userAttributeList.get(9).getAttributeDetails());
+        user.getAddress().getGeo().setLng(userAttributeList.get(10).getAttributeDetails());
+        user.setPhone(userAttributeList.get(11).getAttributeDetails());
+        user.setWebsite(userAttributeList.get(12).getAttributeDetails());
+        user.getCompany().setName(userAttributeList.get(14).getAttributeDetails());
+        user.getCompany().setCatchPhrase(userAttributeList.get(15).getAttributeDetails());
+        user.getCompany().setBs(userAttributeList.get(16).getAttributeDetails());
+
+        return user;
+    }
+
 
 }
