@@ -45,4 +45,11 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor")
 
     implementation 'com.google.code.gson:gson:2.8.6'
+
+    //lifecycle
+    implementation "android.arch.lifecycle:runtime:1.1.1"
+    implementation "android.arch.lifecycle:extensions:1.1.1"
+    annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
+
+
 }
