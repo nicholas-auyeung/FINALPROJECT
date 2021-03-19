@@ -108,5 +108,13 @@ public class UserParser implements ObjectParser{
         return user;
     }
 
+    @Override
+    public List<User> setUserProfileImages(List<User> userList) {
+        userList.stream().forEach(u -> {
+            u.setImageUri("https://robohash.org/qwerty" + u.getName().replaceAll("\\s", ""));
+        });
+
+        return userList;
+    }
 
 }

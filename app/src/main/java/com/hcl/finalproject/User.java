@@ -8,6 +8,7 @@ public class User implements Serializable{
     private String name = "";
     private String username = "";
     private String email = "";
+    private String imageUri = "";
     public Address address = new Address();
     public Address getAddress(){
         return address;
@@ -170,6 +171,9 @@ public class User implements Serializable{
         return website;
     }
 
+    public String getImageUri() {
+        return imageUri;
+    }
     public void setId(String id) {
         this.id = id;
     }
@@ -202,13 +206,18 @@ public class User implements Serializable{
         this.company = company;
     }
 
+    public void setImageUri(String imageUri) {
+        this.imageUri = imageUri;
+    }
+
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
+                ", imageUri='" + imageUri + '\'' +
                 ", address=" + address +
                 ", phone='" + phone + '\'' +
                 ", website='" + website + '\'' +

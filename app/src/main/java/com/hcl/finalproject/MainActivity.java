@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Datasource dataSource;
 
+    private ObjectParser objectParser;
+
     private User signInUser;
 
     private List<User> users = new ArrayList<>();
@@ -121,6 +123,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Gson gson = new Gson();
 
         users.addAll(Arrays.asList((gson.fromJson(data, User[].class))));
+
+        objectParser = new UserParser();
+
+        users = objectParser.setUserProfileImages(users);
 
         recyclerView = findViewById(R.id.recycler_view);
 

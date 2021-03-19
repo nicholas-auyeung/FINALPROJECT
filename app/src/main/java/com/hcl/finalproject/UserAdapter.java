@@ -2,14 +2,18 @@ package com.hcl.finalproject;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
@@ -30,7 +34,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
-        holder.getTextView().setText(userList.get(position).getName());
+        Picasso.get().load(userList.get(position).getImageUri()).into(holder.getUserImage());
+        holder.getUserNameText().setText(userList.get(position).getName());
     }
 
     @Override
@@ -41,17 +46,24 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     public static class UserViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        private TextView textView;
-        private CardView cardView;
+        private ImageView userImage;
+        private TextView userNameText;
+        private CardView userCard;
 
         public UserViewHolder(@NonNull View view) {
             super(view);
-            textView = (TextView) view.findViewById(R.id.user_text);
-            cardView = (CardView) view.findViewById(R.id.user_card);
+            userImage = (ImageView) view.findViewById(R.id.user_profile_img);
+            userNameText = (TextView) view.findViewById(R.id.user_text);
+            userCard = (CardView) view.findViewById(R.id.user_card);
             view.findViewById(R.id.user_card).setOnClickListener(this);
         }
-        public TextView getTextView(){
-            return textView;
+
+        public ImageView getUserImage() {
+            return userImage;
+        }
+
+        public TextView getUserNameText() {
+            return userNameText;
         }
 
         @Override

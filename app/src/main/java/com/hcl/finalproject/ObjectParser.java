@@ -9,4 +9,6 @@ public interface ObjectParser {
 
     public List<UserAttribute> objectToList(User user);
     public User updateUser(User user, List<UserAttribute> userAttributeList);
+    public List<User> setUserProfileImages(List<User> userList);
+
 }
