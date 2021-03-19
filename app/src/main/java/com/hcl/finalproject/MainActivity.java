@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements DataSourceCallBack{
 
     private GoogleSignInClient mGoogleSignInClient;
 
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         try {
-            dataSource = new Datasource(MainActivity.this, this);
+            dataSource = new Datasource(this, this);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -103,8 +103,8 @@ public class MainActivity extends AppCompatActivity{
         startActivity(signOutIntent);
     }
 
-    public void setRecyclerView(){
-
+    @Override
+    public void callback() {
         String data = dataSource.getData();
 
         Gson gson = new Gson();
@@ -122,7 +122,6 @@ public class MainActivity extends AppCompatActivity{
         recyclerView.setAdapter(userAdapter);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
     }
 
     @Override
@@ -149,6 +148,5 @@ public class MainActivity extends AppCompatActivity{
 
         return super.onOptionsItemSelected(item);
     }
-
 
 }

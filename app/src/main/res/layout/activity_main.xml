@@ -15,7 +15,9 @@
         android:layout_marginLeft="8dp"
         android:text="User Profiles"
         android:textStyle="bold"
-        android:textSize="50dp"
+        android:fontFamily="@font/fredoka_one"
+        android:textColor="#471A97"
+        android:textSize="45dp"
         android:gravity="center_vertical" />
 
     <androidx.recyclerview.widget.RecyclerView

@@ -27,12 +27,12 @@ public class Datasource{
 
     private final OkHttpClient client = new OkHttpClient();
     private String data;
-    private MainActivity mainActivity;
+    private DataSourceCallBack dataSourceCallBack;
     private Context context;
     private final Handler handler;
 
-    Datasource(MainActivity mainActivity, Context context) throws Exception {
-        this.mainActivity = mainActivity;
+    Datasource(DataSourceCallBack dataSourceCallBack, Context context) throws Exception {
+        this.dataSourceCallBack = dataSourceCallBack;
         this.context = context;
         handler = new Handler(Looper.getMainLooper());
         getJSONData();
@@ -43,37 +43,31 @@ public class Datasource{
     }
 
     public void getJSONData() throws Exception{
-        new Thread(new Runnable() {
+        Request request = new Request.Builder()
+                .url("http://jsonplaceholder.typicode.com/users")
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
             @Override
-            public void run() {
-                Request request = new Request.Builder()
-                        .url("http://jsonplaceholder.typicode.com/users")
-                        .build();
-
-                client.newCall(request).enqueue(new Callback() {
-                    @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                        e.printStackTrace();
-                    }
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        try(ResponseBody responseBody = response.body()){
-                            if(!response.isSuccessful()){
-                                throw new IOException("Unexpected code " + response);
-                            }
-                            data = responseBody.string();
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-
-                                    mainActivity.setRecyclerView();
-                                }
-                            });
-                        }
-                    }
-                });
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
             }
-        }).start();
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try(ResponseBody responseBody = response.body()){
+                    if(!response.isSuccessful()){
+                        throw new IOException("Unexpected code " + response);
+                    }
+                    data = responseBody.string();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            dataSourceCallBack.callback();
+                        }
+                    });
+                }
+            }
+        });
     }
 
     public void runOnUiThread(Runnable r){
