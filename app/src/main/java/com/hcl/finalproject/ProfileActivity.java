@@ -83,7 +83,7 @@ public class ProfileActivity extends AppCompatActivity{
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.menu_profile, menu);
-        updateButton = menu.findItem(R.id.updateButton);
+        updateButton = menu.findItem(R.id.update_button);
         return super.onCreateOptionsMenu(menu);
 
     }
@@ -102,7 +102,7 @@ public class ProfileActivity extends AppCompatActivity{
 
         int id = item.getItemId();
 
-        if(id == R.id.updateButton){
+        if(id == R.id.update_button){
             Log.i("UPDATED", String.valueOf(userProfileEditAdapter.getUserAttributeList()));
             SharedPreferences sharedPreferences = getSharedPreferences("LOGGED IN", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
