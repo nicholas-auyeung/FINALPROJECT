@@ -2,15 +2,19 @@ package com.hcl.finalproject;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -117,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
 
         recyclerView = findViewById(R.id.recycler_view);
 
-        userAdapter = new UserAdapter(users, this);
+        userAdapter = new UserAdapter(users, this, this);
 
         recyclerView.setAdapter(userAdapter);
 
@@ -148,5 +152,31 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void requestCameraPermissions(){
+        if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)){
+            FragmentManager fm = getSupportFragmentManager();
+            CameraPermissionDialogFragment alertDialog  = CameraPermissionDialogFragment.newInstance();
+            alertDialog.show(fm, "fragment_alert");
+        }else{
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CameraPermissionDialogFragment.getPermissionRequestCamera());
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
+        if(requestCode == CameraPermissionDialogFragment.getPermissionRequestCamera()){
+            if(grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                dispatchTakePictureIntent();
+            }else{
+                Toast.makeText(this, "Permission was denied", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private void dispatchTakePictureIntent(){
+        //begin writing camera code here
+    }
+
 
 }

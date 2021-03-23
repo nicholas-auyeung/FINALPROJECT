@@ -1,16 +1,21 @@
 package com.hcl.finalproject;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.media.Image;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
@@ -23,6 +28,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     private static Context context;
     private static List<User> userList;
+    private static MainActivity mainActivity;
 
     @NonNull
     @Override
@@ -56,6 +62,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             userNameText = (TextView) view.findViewById(R.id.user_text);
             userCard = (CardView) view.findViewById(R.id.user_card);
             view.findViewById(R.id.user_card).setOnClickListener(this);
+            view.findViewById(R.id.user_profile_img).setOnClickListener(this);
         }
 
         public ImageView getUserImage() {
@@ -68,14 +75,26 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
         @Override
         public void onClick(View v) {
+            switch(v.getId()){
+                case R.id.user_card:
+                    viewProfile();
+                    break;
+                case R.id.user_profile_img:
+                    mainActivity.requestCameraPermissions();
+            }
+        }
+
+        public void viewProfile(){
             Intent intent = new Intent(context, ProfileActivity.class);
             intent.putExtra("user_selected", userList.get(getAdapterPosition()));
             context.startActivity(intent);
         }
+
     }
 
-    public UserAdapter(List<User> dataSet, Context current){
+    public UserAdapter(List<User> dataSet, Context current, MainActivity mainActivity){
         this.context = current;
         userList = dataSet;
+        this.mainActivity = mainActivity;
     }
 }

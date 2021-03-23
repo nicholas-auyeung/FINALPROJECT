@@ -1,4 +1,7 @@
 <resources>
     <string name="server_client_id">306114421346-27p0dchrts21cuu3vkd49v8dkjdkn86t.apps.googleusercontent.com</string>
     <string name="app_name">FINALPROJECT</string>
+    <string name="request_camera_permission">Enable camera to take a new profile picture?</string>
+    <string name="permission_yes">YES</string>
+    <string name="permission_no">NO</string>
 </resources>
