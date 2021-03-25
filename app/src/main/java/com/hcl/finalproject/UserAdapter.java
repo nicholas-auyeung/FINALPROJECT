@@ -149,8 +149,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     public void getCameraProfileImageInCache(Bitmap imageBitmap) {
         this.imageBitmap = imageBitmap;
+        if(memoryCache.get("profile_image" + position) != null){
+            memoryCache.remove("profile_image" + position);
+        }
         userList.get(position).setImageCached(true);
         addBitMapToMemoryCache("profile_image" + position, imageBitmap);
+        Log.i("POSITION INSIDE CACHE", String.valueOf(position));
         notifyDataSetChanged();
     }
 
