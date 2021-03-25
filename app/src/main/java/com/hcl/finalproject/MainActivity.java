@@ -67,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
 
     private int position;
 
+    private static boolean setup = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
 
         Intent intent = getIntent();
 
-        if(acct != null && (sharedPreferences.getString("EDIT", "FALSE").compareTo("FALSE") == 0 && sharedPreferences.getString("EDIT_IMAGE", "FALSE").compareTo("FALSE") == 0)){
+        if(acct != null && (sharedPreferences.getString("EDIT", "FALSE").compareTo("FALSE") == 0 && sharedPreferences.getString("EDIT_IMAGE", "FALSE").compareTo("FALSE") == 0) && setup == false){
             try {
                 dataSource = new Datasource(this, this);
             } catch (Exception e) {
@@ -105,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
             editor.commit();
             signInUser = new User(acct.getId(), acct.getDisplayName(), acct.getEmail());
             users.add(signInUser);
+            setup = true;
         }else{
             Log.i("EDIT", "TRUE");
             if(sharedPreferences.getString("EDIT", "FALSE").compareTo("TRUE") == 0){
