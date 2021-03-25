@@ -47,9 +47,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
-        Log.i("User List SIZE", String.valueOf(userList.size()));
-        Log.i("USER LIST CONTENT", String.valueOf(userList));
-        Log.i("User Last", userList.get(userList.size() - 1).toString());
 
         if(userList.get(position).getImageCached() == true){
             holder.getUserImage().setImageBitmap(getBitmapFromMemCache("profile_image" + position));
@@ -154,7 +151,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         }
         userList.get(position).setImageCached(true);
         addBitMapToMemoryCache("profile_image" + position, imageBitmap);
-        Log.i("POSITION INSIDE CACHE", String.valueOf(position));
         notifyDataSetChanged();
     }
 

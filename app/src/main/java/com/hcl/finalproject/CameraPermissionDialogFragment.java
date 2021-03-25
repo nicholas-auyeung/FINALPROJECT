@@ -27,6 +27,7 @@ public class CameraPermissionDialogFragment extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //do nothing
+                        dismiss();
                     }
                 });
 

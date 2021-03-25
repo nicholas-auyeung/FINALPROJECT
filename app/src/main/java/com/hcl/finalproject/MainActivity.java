@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i("onCreate", "CREATED");
         setContentView(R.layout.activity_main);
 
     }
@@ -80,7 +79,6 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
     @Override
     protected void onStart(){
         super.onStart();
-        Log.i("onStart", "Started");
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
@@ -91,9 +89,6 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
         SharedPreferences sharedPreferences = getSharedPreferences("LOGGED IN", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        Log.i("EDIT VALUE", sharedPreferences.getString("EDIT", "DEFAULT"));
-        Log.i("EDIT IMAGE", sharedPreferences.getString("EDIT IMAGE", "DEFAULT"));
-
         Intent intent = getIntent();
 
         if(acct != null && (sharedPreferences.getString("EDIT", "FALSE").compareTo("FALSE") == 0 && sharedPreferences.getString("EDIT_IMAGE", "FALSE").compareTo("FALSE") == 0) && setup == false){
@@ -102,18 +97,14 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            Log.i("EDIT", "FALSE");
             editor.putString("loggedInUser", acct.getDisplayName());
             editor.commit();
             signInUser = new User(acct.getId(), acct.getDisplayName(), acct.getEmail());
             users.add(signInUser);
             setup = true;
         }else{
-            Log.i("EDIT", "TRUE");
             if(sharedPreferences.getString("EDIT", "FALSE").compareTo("TRUE") == 0){
-                Log.i("SAVE EXISTING", "USER");
                 User updatedUser = (User) intent.getSerializableExtra("user_updated");
-                //users.add(updatedUser);
                 users.set(0, updatedUser);
                 setupRecyclerView();
                 editor.putString("EDIT", "FALSE");
