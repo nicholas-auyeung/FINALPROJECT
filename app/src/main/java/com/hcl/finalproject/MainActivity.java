@@ -91,7 +91,8 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
 
         Intent intent = getIntent();
 
-        if(acct != null && (sharedPreferences.getString("EDIT", "FALSE").compareTo("FALSE") == 0 && sharedPreferences.getString("EDIT_IMAGE", "FALSE").compareTo("FALSE") == 0) && setup == false){
+        //(sharedPreferences.getString("EDIT", "FALSE").compareTo("FALSE") == 0 && sharedPreferences.getString("EDIT_IMAGE", "FALSE").compareTo("FALSE") == 0) &&
+        if(acct != null && setup == false){
             try {
                 dataSource = new Datasource(this, this);
             } catch (Exception e) {
@@ -108,12 +109,14 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
                 users.set(0, updatedUser);
                 setupRecyclerView();
                 editor.putString("EDIT", "FALSE");
-            }else{
+                Toast.makeText(this, "User successfully updated", Toast.LENGTH_LONG).show();
+            }else if(sharedPreferences.getString("EDIT_IMAGE", "FALSE").compareTo("TRUE") == 0){
                 editor.putString("EDIT_IMAGE", "FALSE");
+                Toast.makeText(this, "User successfully updated", Toast.LENGTH_LONG).show();
+            }else{
+                setupRecyclerView();
             }
             editor.commit();
-
-            Toast.makeText(this, "User successfully updated", Toast.LENGTH_LONG).show();
         }
     }
 
