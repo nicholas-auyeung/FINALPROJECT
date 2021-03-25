@@ -9,6 +9,7 @@ public class User implements Serializable{
     private String username = "";
     private String email = "";
     private String imageUri = "";
+    private Boolean imageCached = false;
     public Address address = new Address();
     public Address getAddress(){
         return address;
@@ -88,6 +89,7 @@ public class User implements Serializable{
         public void setZipcode(String zipcode) {
             this.zipcode = zipcode;
         }
+
 
         @Override
         public String toString() {
@@ -174,6 +176,11 @@ public class User implements Serializable{
     public String getImageUri() {
         return imageUri;
     }
+
+    public Boolean getImageCached() {
+        return imageCached;
+    }
+
     public void setId(String id) {
         this.id = id;
     }
@@ -210,6 +217,10 @@ public class User implements Serializable{
         this.imageUri = imageUri;
     }
 
+    public void setImageCached(Boolean imageCached) {
+        this.imageCached = imageCached;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -218,6 +229,7 @@ public class User implements Serializable{
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", imageUri='" + imageUri + '\'' +
+                ", imageCached=" + imageCached +
                 ", address=" + address +
                 ", phone='" + phone + '\'' +
                 ", website='" + website + '\'' +

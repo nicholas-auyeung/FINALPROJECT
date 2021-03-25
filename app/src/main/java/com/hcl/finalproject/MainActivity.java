@@ -11,13 +11,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.util.LruCache;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -43,6 +47,8 @@ import java.util.concurrent.Semaphore;
 
 public class MainActivity extends AppCompatActivity implements DataSourceCallBack{
 
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+
     private GoogleSignInClient mGoogleSignInClient;
 
     private Datasource dataSource;
@@ -51,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
 
     private User signInUser;
 
-    private List<User> users = new ArrayList<>();
+    private static List<User> users = new ArrayList<>();
 
     private UserAdapter userAdapter;
 
@@ -59,22 +65,20 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
 
     private MenuItem signOutButton;
 
+    private int position;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i("onCreate", "CREATED");
         setContentView(R.layout.activity_main);
-        try {
-            dataSource = new Datasource(this, this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
     }
 
     @Override
     protected void onStart(){
         super.onStart();
-
+        Log.i("onStart", "Started");
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
@@ -85,20 +89,49 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
         SharedPreferences sharedPreferences = getSharedPreferences("LOGGED IN", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        if(acct != null && sharedPreferences.getString("EDIT", "FALSE").compareTo("FALSE") == 0) {
+        Log.i("EDIT VALUE", sharedPreferences.getString("EDIT", "DEFAULT"));
+        Log.i("EDIT IMAGE", sharedPreferences.getString("EDIT IMAGE", "DEFAULT"));
+
+        Intent intent = getIntent();
+
+        if(acct != null && (sharedPreferences.getString("EDIT", "FALSE").compareTo("FALSE") == 0 && sharedPreferences.getString("EDIT_IMAGE", "FALSE").compareTo("FALSE") == 0)){
+            try {
+                dataSource = new Datasource(this, this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Log.i("EDIT", "FALSE");
             editor.putString("loggedInUser", acct.getDisplayName());
             editor.commit();
             signInUser = new User(acct.getId(), acct.getDisplayName(), acct.getEmail());
             users.add(signInUser);
         }else{
-            editor.putString("EDIT", "FALSE");
+            Log.i("EDIT", "TRUE");
+            if(sharedPreferences.getString("EDIT", "FALSE").compareTo("TRUE") == 0){
+                Log.i("SAVE EXISTING", "USER");
+                User updatedUser = (User) intent.getSerializableExtra("user_updated");
+                //users.add(updatedUser);
+                users.set(0, updatedUser);
+                setupRecyclerView();
+                editor.putString("EDIT", "FALSE");
+            }else{
+                editor.putString("EDIT_IMAGE", "FALSE");
+            }
             editor.commit();
-            Intent intent = getIntent();
-            User updatedUser = (User) intent.getSerializableExtra("user_updated");
-            users.add(updatedUser);
-            Toast.makeText(this, "User successfully updated", Toast.LENGTH_LONG).show();
 
+            Toast.makeText(this, "User successfully updated", Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void setupRecyclerView() {
+
+        recyclerView = findViewById(R.id.recycler_view);
+
+        userAdapter = new UserAdapter(users, this, this);
+
+        recyclerView.setAdapter(userAdapter);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
     }
 
@@ -128,6 +161,7 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -153,7 +187,8 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
         return super.onOptionsItemSelected(item);
     }
 
-    public void requestCameraPermissions(){
+    public void requestCameraPermissions(int position){
+        this.position = position;
         if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)){
             FragmentManager fm = getSupportFragmentManager();
             CameraPermissionDialogFragment alertDialog  = CameraPermissionDialogFragment.newInstance();
@@ -162,21 +197,38 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CameraPermissionDialogFragment.getPermissionRequestCamera());
         }
     }
+    private void dispatchTakePictureIntent(){
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        try{
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }catch(ActivityNotFoundException e){
+            e.printStackTrace();
+        }
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            users.get(position).setImageCached(true);
+            userAdapter.getCameraProfileImageInCache(imageBitmap);
 
+        }
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
         if(requestCode == CameraPermissionDialogFragment.getPermissionRequestCamera()){
             if(grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                SharedPreferences sharedPreferences = getSharedPreferences("LOGGED IN", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("EDIT_IMAGE", "TRUE");
+                editor.commit();
                 dispatchTakePictureIntent();
             }else{
                 Toast.makeText(this, "Permission was denied", Toast.LENGTH_LONG).show();
             }
         }
     }
-
-    private void dispatchTakePictureIntent(){
-        //begin writing camera code here
-    }
-
 
 }
