@@ -3,7 +3,9 @@ package com.hcl.finalproject;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
@@ -25,6 +27,7 @@ import android.util.LruCache;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -53,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
 
     private Datasource dataSource;
 
-    private ObjectParser objectParser;
+    private ObjectParser objectParser = new UserParser();;
 
     private User signInUser;
 
@@ -63,17 +66,21 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
 
     private RecyclerView recyclerView;
 
+    private TextView textHeader;
+
     private MenuItem signOutButton;
 
     private int position;
 
     private static boolean setup = false;
 
+    private UserFragment userFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        textHeader = (TextView) findViewById(R.id.main_header_text);
     }
 
     @Override
@@ -107,30 +114,62 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
             if(sharedPreferences.getString("EDIT", "FALSE").compareTo("TRUE") == 0){
                 User updatedUser = (User) intent.getSerializableExtra("user_updated");
                 users.set(0, updatedUser);
-                setupRecyclerView();
+                setupUserFragment();
                 editor.putString("EDIT", "FALSE");
                 Toast.makeText(this, "User successfully updated", Toast.LENGTH_LONG).show();
             }else if(sharedPreferences.getString("EDIT_IMAGE", "FALSE").compareTo("TRUE") == 0){
                 editor.putString("EDIT_IMAGE", "FALSE");
                 Toast.makeText(this, "User successfully updated", Toast.LENGTH_LONG).show();
             }else{
-                setupRecyclerView();
+                setupUserFragment();
             }
             editor.commit();
         }
     }
-
+    
     private void setupRecyclerView() {
 
+        /*
         recyclerView = findViewById(R.id.recycler_view);
 
         userAdapter = new UserAdapter(users, this, this);
 
         recyclerView.setAdapter(userAdapter);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));*/
 
     }
+
+    private void setupUserFragment(){
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        userFragment = new UserFragment(users, this, this);
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.frame_layout_main, userFragment, "user_transaction");
+        fragmentTransaction.commit();
+
+    }
+
+    public void swapUserProfileEditFragment(int position){
+        textHeader.setText(R.string.header_edit_details);
+        List<UserAttribute> userAttributeList = objectParser.objectToList(users.get(position));
+        UserProfileEditFragment userProfileEditFragment = new UserProfileEditFragment(userAttributeList);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frame_layout_main, userProfileEditFragment);
+        fragmentTransaction.commit();
+    }
+
+    public void swapUserProfileFragment(int position){
+        textHeader.setText(R.string.header_detils);
+        List<UserAttribute> userAttributeList = objectParser.objectToList(users.get(position));
+        UserProfileFragment userProfileFragment = new UserProfileFragment(userAttributeList);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frame_layout_main,userProfileFragment);
+        fragmentTransaction.commit();
+    }
+
 
     public void handleSignOut(){
         Intent signOutIntent = new Intent(this, LoginActivity.class);
@@ -145,17 +184,19 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
 
         users.addAll(Arrays.asList((gson.fromJson(data, User[].class))));
 
-        objectParser = new UserParser();
-
         users = objectParser.setUserProfileImages(users);
 
+        /*
         recyclerView = findViewById(R.id.recycler_view);
 
         userAdapter = new UserAdapter(users, this, this);
 
         recyclerView.setAdapter(userAdapter);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));*/
+
+        setupUserFragment();
+
     }
 
 
@@ -194,25 +235,7 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CameraPermissionDialogFragment.getPermissionRequestCamera());
         }
     }
-    private void dispatchTakePictureIntent(){
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        try{
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        }catch(ActivityNotFoundException e){
-            e.printStackTrace();
-        }
-    }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            users.get(position).setImageCached(true);
-            userAdapter.getCameraProfileImageInCache(imageBitmap);
 
-        }
-    }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
         if(requestCode == CameraPermissionDialogFragment.getPermissionRequestCamera()){
@@ -221,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("EDIT_IMAGE", "TRUE");
                 editor.commit();
-                dispatchTakePictureIntent();
+                userFragment.dispatchTakePictureIntent();
             }else{
                 Toast.makeText(this, "Permission was denied", Toast.LENGTH_LONG).show();
             }

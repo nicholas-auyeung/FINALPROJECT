@@ -3,6 +3,7 @@ package com.hcl.finalproject;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.icu.text.Transliterator;
 import android.media.Image;
@@ -95,7 +96,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         public void onClick(View v) {
             switch(v.getId()){
                 case R.id.user_card:
-                    viewProfile();
+                    if(getAdapterPosition() == 0){
+                        mainActivity.swapUserProfileEditFragment(getAdapterPosition());
+                    }else{
+                        mainActivity.swapUserProfileFragment(getAdapterPosition());
+                    }
+
                     break;
                 case R.id.user_profile_img:
                     UserAdapter.this.position = getAdapterPosition();
@@ -105,11 +111,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         }
 
         public void viewProfile(){
+            /*
             Intent intent = new Intent(context, ProfileActivity.class);
             intent.putExtra("user_selected", userList.get(getAdapterPosition()));
-            context.startActivity(intent);
-        }
+            context.startActivity(intent);*/
 
+        }
 
     }
 
@@ -153,5 +160,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         addBitMapToMemoryCache("profile_image" + position, imageBitmap);
         notifyDataSetChanged();
     }
+
 
 }

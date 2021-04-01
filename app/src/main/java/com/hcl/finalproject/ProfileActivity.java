@@ -1,6 +1,8 @@
 package com.hcl.finalproject;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -47,7 +49,7 @@ public class ProfileActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_profile);
         super.onCreate(savedInstanceState);
-        attributeRecyclerView = findViewById(R.id.recycler_view_profile);
+        //attributeRecyclerView = findViewById(R.id.recycler_view_profile);
 
         objectParser = new UserParser();
 
@@ -61,15 +63,28 @@ public class ProfileActivity extends AppCompatActivity{
         loggedInUser = sharedPreferences.getString("loggedInUser", "");
 
         if(user.getName().compareTo(loggedInUser) == 0) {
+
+            UserProfileEditFragment userProfileEditFragment = new UserProfileEditFragment(userAttributeList);
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.add(R.id.frame_layout, userProfileEditFragment);
+            fragmentTransaction.commit();
+            /*
             userProfileEditAdapter = new UserProfileEditAdapter(userAttributeList);
-            attributeRecyclerView.setAdapter(userProfileEditAdapter);
+            attributeRecyclerView.setAdapter(userProfileEditAdapter);*/
 
         }else{
             mState = "HIDE_MENU";
             invalidateOptionsMenu();
+            /*
             UserProfileAdapter userProfileAdapter = new UserProfileAdapter(userAttributeList);
             attributeRecyclerView.setAdapter(userProfileAdapter);
-            attributeRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+            attributeRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));*/
+            UserProfileFragment userProfileFragment = new UserProfileFragment(userAttributeList);
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.add(R.id.frame_layout, userProfileFragment);
+            fragmentTransaction.commit();
         }
     }
 

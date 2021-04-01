@@ -20,11 +20,9 @@
         android:textSize="45dp"
         android:gravity="center_vertical" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutManager="LinearLayoutManager"
-        />
+        android:id="@+id/frame_layout_main"/>
 
 </LinearLayout>
