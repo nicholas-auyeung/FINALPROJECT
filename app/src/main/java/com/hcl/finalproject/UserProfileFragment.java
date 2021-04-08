@@ -35,4 +35,8 @@ public class UserProfileFragment extends Fragment {
     public UserProfileFragment(List<UserAttribute> userAttributeList) {
         this.userAttributeList = userAttributeList;
     }
+
+    public UserProfileFragment() {
+        super();
+    }
 }

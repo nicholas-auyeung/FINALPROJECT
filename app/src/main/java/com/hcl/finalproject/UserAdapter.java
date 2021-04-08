@@ -96,12 +96,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         public void onClick(View v) {
             switch(v.getId()){
                 case R.id.user_card:
+                    Log.i("USER_CARD_POS", String.valueOf(getAdapterPosition()));
+                    Log.i("MAIN_ACTIVITY_CONTENT", String.valueOf(mainActivity));
                     if(getAdapterPosition() == 0){
                         mainActivity.swapUserProfileEditFragment(getAdapterPosition());
                     }else{
                         mainActivity.swapUserProfileFragment(getAdapterPosition());
                     }
-
                     break;
                 case R.id.user_profile_img:
                     UserAdapter.this.position = getAdapterPosition();
@@ -121,13 +122,16 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     }
 
     public UserAdapter(List<User> dataSet, Context current, MainActivity mainActivity){
+        Log.i("USERADAPTER CONSTRUCTOR", "CREATED");
         this.context = current;
-        this.mainActivity = mainActivity;
         userList = dataSet;
+        this.mainActivity = mainActivity;
+
         if(cachedExists == false){
             setupCache();
             cachedExists = true;
         }
+        Log.i("USERADAPTER CONSTRUCTOR", String.valueOf(this.mainActivity));
     }
 
     private void setupCache() {

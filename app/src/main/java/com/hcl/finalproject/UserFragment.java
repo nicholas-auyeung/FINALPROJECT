@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,9 +33,9 @@ public class UserFragment extends Fragment {
 
     RecyclerView userRecyclerView;
     private UserAdapter userAdapter;
-    private List<User> userList;
+    private static List<User> userList;
     private Context context;
-    private MainActivity mainActivity;
+    private static MainActivity mainActivity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -42,6 +43,7 @@ public class UserFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_user, container, false);
         userRecyclerView = view.findViewById(R.id.recycler_view_user);
+        Log.i("ONCREATEVIEW", String.valueOf(mainActivity));
         userAdapter = new UserAdapter(userList, context, mainActivity);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         userRecyclerView.setLayoutManager(linearLayoutManager);
@@ -52,6 +54,14 @@ public class UserFragment extends Fragment {
     public UserFragment(List<User> userList, Context context, MainActivity mainActivity) {
         this.userList = userList;
         this.context = context;
+        this.mainActivity = mainActivity;
+    }
+
+    public UserFragment() {
+        super();
+    }
+
+    public void setMainActivity(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
     }
 

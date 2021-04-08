@@ -16,7 +16,7 @@ import java.util.List;
 
 public class UserProfileAdapter extends RecyclerView.Adapter<UserProfileAdapter.UserProfileViewHolder> {
 
-    private List<UserAttribute> userAttributeList;
+    private static List<UserAttribute> userAttributeList;
 
 
     @NonNull

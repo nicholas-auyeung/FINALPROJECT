@@ -5,5 +5,10 @@
         android:id="@+id/sign_out_button"
         android:title="Sign Out"
         app:showAsAction="always"/>
+    <item
+        android:id="@+id/update_button"
+        android:title="Update"
+        app:showAsAction="always"
+        />
 
 </menu>

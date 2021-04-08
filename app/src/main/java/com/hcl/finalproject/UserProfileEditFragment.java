@@ -18,13 +18,15 @@ public class UserProfileEditFragment extends Fragment {
     RecyclerView editAttributeRecyclerView;
     private List<UserAttribute> userAttributeList;
 
+    private UserProfileEditAdapter userProfileEditAdapter;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_user_profile_edit, container, false);
         editAttributeRecyclerView = view.findViewById(R.id.recycler_view_profile_edit);
-        UserProfileEditAdapter userProfileEditAdapter = new UserProfileEditAdapter(userAttributeList);
+        userProfileEditAdapter = new UserProfileEditAdapter(userAttributeList);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         editAttributeRecyclerView.setLayoutManager(linearLayoutManager);
         editAttributeRecyclerView.setAdapter(userProfileEditAdapter);
@@ -34,5 +36,13 @@ public class UserProfileEditFragment extends Fragment {
 
     public UserProfileEditFragment(List<UserAttribute> userAttributeList) {
         this.userAttributeList = userAttributeList;
+    }
+
+    public UserProfileEditFragment() {
+        super();
+    }
+
+    public UserProfileEditAdapter getUserProfileEditAdapter() {
+        return userProfileEditAdapter;
     }
 }
