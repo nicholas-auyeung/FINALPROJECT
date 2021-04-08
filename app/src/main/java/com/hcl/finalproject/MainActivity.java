@@ -128,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
         startActivity(getIntent());
     }
 
+    //fragment
     private void setupUserFragment(){
         FragmentManager fragmentManager = getSupportFragmentManager();
         if(fragmentManager.findFragmentByTag("user_frame") == null){
