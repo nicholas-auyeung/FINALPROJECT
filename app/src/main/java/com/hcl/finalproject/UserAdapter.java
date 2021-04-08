@@ -30,13 +30,11 @@ import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
 
-    private static Context context;
     private static List<User> userList;
     private static MainActivity mainActivity;
     private static boolean cachedExists = false;
     private static LruCache<String, Bitmap> memoryCache;
     private static int position;
-    private Bitmap imageBitmap;
 
     @NonNull
     @Override
@@ -73,13 +71,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
         private ImageView userImage;
         private TextView userNameText;
-        private CardView userCard;
 
         public UserViewHolder(@NonNull View view) {
             super(view);
             userImage = (ImageView) view.findViewById(R.id.user_profile_img);
             userNameText = (TextView) view.findViewById(R.id.user_text);
-            userCard = (CardView) view.findViewById(R.id.user_card);
             view.findViewById(R.id.user_card).setOnClickListener(this);
             view.findViewById(R.id.user_profile_img).setOnClickListener(this);
         }
@@ -96,8 +92,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         public void onClick(View v) {
             switch(v.getId()){
                 case R.id.user_card:
-                    Log.i("USER_CARD_POS", String.valueOf(getAdapterPosition()));
-                    Log.i("MAIN_ACTIVITY_CONTENT", String.valueOf(mainActivity));
                     if(getAdapterPosition() == 0){
                         mainActivity.swapUserProfileEditFragment(getAdapterPosition());
                     }else{
@@ -106,32 +100,18 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                     break;
                 case R.id.user_profile_img:
                     UserAdapter.this.position = getAdapterPosition();
-                    Log.i("Click position", String.valueOf(UserAdapter.this.position));
                     mainActivity.requestCameraPermissions(getAdapterPosition());
             }
         }
-
-        public void viewProfile(){
-            /*
-            Intent intent = new Intent(context, ProfileActivity.class);
-            intent.putExtra("user_selected", userList.get(getAdapterPosition()));
-            context.startActivity(intent);*/
-
-        }
-
     }
 
-    public UserAdapter(List<User> dataSet, Context current, MainActivity mainActivity){
-        Log.i("USERADAPTER CONSTRUCTOR", "CREATED");
-        this.context = current;
+    public UserAdapter(List<User> dataSet, MainActivity mainActivity){
         userList = dataSet;
         this.mainActivity = mainActivity;
-
         if(cachedExists == false){
             setupCache();
             cachedExists = true;
         }
-        Log.i("USERADAPTER CONSTRUCTOR", String.valueOf(this.mainActivity));
     }
 
     private void setupCache() {
@@ -156,7 +136,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     }
 
     public void getCameraProfileImageInCache(Bitmap imageBitmap) {
-        this.imageBitmap = imageBitmap;
+
         if(memoryCache.get("profile_image" + position) != null){
             memoryCache.remove("profile_image" + position);
         }

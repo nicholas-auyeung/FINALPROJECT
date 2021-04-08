@@ -34,26 +34,22 @@ public class UserFragment extends Fragment {
     RecyclerView userRecyclerView;
     private UserAdapter userAdapter;
     private static List<User> userList;
-    private Context context;
     private static MainActivity mainActivity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState){
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_user, container, false);
         userRecyclerView = view.findViewById(R.id.recycler_view_user);
-        Log.i("ONCREATEVIEW", String.valueOf(mainActivity));
-        userAdapter = new UserAdapter(userList, context, mainActivity);
+        userAdapter = new UserAdapter(userList, mainActivity);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         userRecyclerView.setLayoutManager(linearLayoutManager);
         userRecyclerView.setAdapter(userAdapter);
         return view;
     }
 
-    public UserFragment(List<User> userList, Context context, MainActivity mainActivity) {
+    public UserFragment(List<User> userList, MainActivity mainActivity) {
         this.userList = userList;
-        this.context = context;
         this.mainActivity = mainActivity;
     }
 
@@ -83,7 +79,4 @@ public class UserFragment extends Fragment {
             userAdapter.getCameraProfileImageInCache(imageBitmap);
         }
     }
-
-
-
 }
