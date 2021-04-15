@@ -66,7 +66,13 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
 
     private MenuItem updateButton;
 
-    private boolean mState = false ;
+    private MenuItem geoButton;
+
+    private boolean mEditState = false;
+
+    private boolean mProfileState = false;
+
+    private boolean mMapState = false;
 
     private static int position;
 
@@ -79,6 +85,8 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
     private static boolean swapProfileEdit;
 
     private static boolean swapProfile;
+
+    private static boolean swapMaps;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +121,9 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
             }else if(swapProfile){
                 swapProfile = false;
                 swapUserProfileFragment(position);
+            }else if(swapMaps){
+                swapMaps = false;
+                swapMapsFragment();
             }else{
                 replaceUserFragment();
             }
@@ -122,10 +133,16 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
 
     @Override
     public void onBackPressed(){
-        swapProfileEdit = false;
-        swapProfile = false;
-        finish();
-        startActivity(getIntent());
+        if(swapMaps){
+            swapMaps = false;
+            mMapState = false;
+            swapUserProfileFragment(position);
+        }else{
+            swapProfileEdit = false;
+            swapProfile = false;
+            finish();
+            startActivity(getIntent());
+        }
     }
 
     //fragment
@@ -152,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
     public void swapUserProfileEditFragment(int position){
         this.position = position;
         swapProfileEdit = true;
-        mState = true;
+        mEditState = true;
         invalidateOptionsMenu();
         textHeader.setText(R.string.header_edit_details);
         objectParser = new UserParser();
@@ -169,6 +186,8 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
     public void swapUserProfileFragment(int position){
         this.position = position;
         swapProfile = true;
+        mProfileState = true;
+        invalidateOptionsMenu();
         textHeader.setText(R.string.header_detils);
         List<UserAttribute> userAttributeList = objectParser.objectToList(users.get(position));
         UserProfileFragment userProfileFragment = new UserProfileFragment(userAttributeList);
@@ -178,6 +197,21 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
             fragmentTransaction.replace(R.id.frame_layout_main,userProfileFragment, "profile_frame");
             fragmentTransaction.commit();
         }
+    }
+
+    //maps
+    public void swapMapsFragment(){
+        mProfileState = false;
+        swapProfile = false;
+        mMapState = true;
+        swapMaps = true;
+        invalidateOptionsMenu();
+        textHeader.setText("Geo");
+        MapsFragment mapsFragment = new MapsFragment(users.get(position).getAddress().getGeo().getLat(), users.get(position).getAddress().getGeo().getLng(), users.get(position).getName());
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frame_layout_main, mapsFragment, "maps_frame");
+        fragmentTransaction.commit();
     }
 
 
@@ -206,6 +240,7 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
         getMenuInflater().inflate(R.menu.menu_main, menu);
         signOutButton = menu.findItem(R.id.sign_out_button);
         updateButton = menu.findItem(R.id.update_button);
+        geoButton = menu.findItem(R.id.geo_button);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -213,9 +248,16 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         updateButton.setVisible(false);
-        if(mState == true){
+        geoButton.setVisible(false);
+        if(mEditState){
             signOutButton.setVisible(false);
             updateButton.setVisible(true);
+        }else if(mProfileState){
+            signOutButton.setVisible(false);
+            geoButton.setVisible(true);
+        }else if(mMapState){
+            signOutButton.setVisible(false);
+            geoButton.setVisible(false);
         }
         return true;
     }
@@ -226,21 +268,29 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
 
         int id = item.getItemId();
 
-        if(id == R.id.sign_out_button){
-            mGoogleSignInClient.signOut()
-                    .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            handleSignOut();
-                        }
-                    });
-        }else if(id == R.id.update_button){
-            users.set(0, objectParser.updateUser(users.get(0), userProfileEditFragment.getUserProfileEditAdapter().getUserAttributeList()));
-            mState = false;
-            swapProfileEdit = false;
-            Toast.makeText(this, "User updated successfully", Toast.LENGTH_LONG).show();
-            finish();
-            startActivity(getIntent());
+        switch (id){
+            case(R.id.sign_out_button):
+                mGoogleSignInClient.signOut()
+                        .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                handleSignOut();
+                            }
+                        });
+                break;
+            case (R.id.update_button):
+                users.set(0, objectParser.updateUser(users.get(0), userProfileEditFragment.getUserProfileEditAdapter().getUserAttributeList()));
+                mEditState = false;
+                swapProfileEdit = false;
+                Toast.makeText(this, "User updated successfully", Toast.LENGTH_LONG).show();
+                finish();
+                startActivity(getIntent());
+                break;
+            case(R.id.geo_button):
+                swapMapsFragment();
+                break;
+            default:
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
