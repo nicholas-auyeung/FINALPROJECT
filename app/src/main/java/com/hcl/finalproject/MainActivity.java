@@ -3,6 +3,7 @@ package com.hcl.finalproject;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -34,6 +35,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
@@ -68,11 +70,17 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
 
     private MenuItem geoButton;
 
+    private MenuItem myGeoButton;
+
+    private MenuItem updateGeoButton;
+
     private boolean mEditState = false;
 
     private boolean mProfileState = false;
 
     private boolean mMapState = false;
+
+    private boolean mMyMapState = false;
 
     private static int position;
 
@@ -87,6 +95,8 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
     private static boolean swapProfile;
 
     private static boolean swapMaps;
+
+    private static boolean swapMyMaps;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -199,39 +209,35 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
         }
     }
 
-    //maps
     public void swapMapsFragment(){
+        //implement my location menu bar triggers + orientation change refresh
         mProfileState = false;
         swapProfile = false;
         mMapState = true;
         swapMaps = true;
         invalidateOptionsMenu();
         textHeader.setText("Geo");
-        MapsFragment mapsFragment = new MapsFragment(users.get(position).getAddress().getGeo().getLat(), users.get(position).getAddress().getGeo().getLng(), users.get(position).getName());
+        MapsFragment mapsFragment = new MapsFragment(users.get(position).getAddress().getGeo().getLat(), users.get(position).getAddress().getGeo().getLng(), users.get(position).getName(), false);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout_main, mapsFragment, "maps_frame");
         fragmentTransaction.commit();
     }
 
-
+    //sign out
     public void handleSignOut(){
         Intent signOutIntent = new Intent(this, LoginActivity.class);
         startActivity(signOutIntent);
     }
 
+    //data callback
     @Override
     public void callback() {
         String data = dataSource.getData();
-
         Gson gson = new Gson();
-
         users.addAll(Arrays.asList((gson.fromJson(data, User[].class))));
-
         users = objectParser.setUserProfileImages(users);
-
         setupUserFragment();
-
     }
 
     //menu
@@ -241,6 +247,8 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
         signOutButton = menu.findItem(R.id.sign_out_button);
         updateButton = menu.findItem(R.id.update_button);
         geoButton = menu.findItem(R.id.geo_button);
+        myGeoButton = menu.findItem(R.id.my_geo_button);
+        updateGeoButton = menu.findItem(R.id.update_geo_button);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -249,8 +257,11 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
         super.onPrepareOptionsMenu(menu);
         updateButton.setVisible(false);
         geoButton.setVisible(false);
+        myGeoButton.setVisible(false);
+        updateGeoButton.setVisible(false);
         if(mEditState){
             signOutButton.setVisible(false);
+            myGeoButton.setVisible(true);
             updateButton.setVisible(true);
         }else if(mProfileState){
             signOutButton.setVisible(false);
@@ -258,10 +269,13 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
         }else if(mMapState){
             signOutButton.setVisible(false);
             geoButton.setVisible(false);
+        }else if(mMyMapState){
+            signOutButton.setVisible(false);
+            myGeoButton.setVisible(false);
+            updateGeoButton.setVisible(true);
         }
         return true;
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
@@ -289,33 +303,59 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
             case(R.id.geo_button):
                 swapMapsFragment();
                 break;
+            case(R.id.my_geo_button):
+                requestLocationPermission();
+                break;
             default:
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
-
+    //permissions
     //camera
     public void requestCameraPermissions(int position){
         this.position = position;
-        if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)){
-            FragmentManager fm = getSupportFragmentManager();
-            CameraPermissionDialogFragment alertDialog  = CameraPermissionDialogFragment.newInstance();
-            alertDialog.show(fm, "fragment_alert");
+        if(ContextCompat.checkSelfPermission(this.getApplicationContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED){
+            userFragment.dispatchTakePictureIntent();
         }else{
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CameraPermissionDialogFragment.getPermissionRequestCamera());
+            if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)){
+                FragmentManager fm = getSupportFragmentManager();
+                CameraPermissionDialogFragment alertDialog  = CameraPermissionDialogFragment.newInstance();
+                alertDialog.show(fm, "fragment_alert_camera");
+            }else{
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CameraPermissionDialogFragment.getPermissionRequestCamera());
+            }
+        }
+    }
+    //maps
+    public void requestLocationPermission(){
+        if(ContextCompat.checkSelfPermission(this.getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            //call map fragment with my location enabled
+        }else{
+            if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)){
+                FragmentManager fm = getSupportFragmentManager();
+                LocationPermissionDialogFragment alertDialog = LocationPermissionDialogFragment.newInstance();
+                alertDialog.show(fm, "fragment_alert_location");
+            }else{
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LocationPermissionDialogFragment.getPermissionRequestAccessFineLocation());
+            }
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
         if(requestCode == CameraPermissionDialogFragment.getPermissionRequestCamera()){
-            if(grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                 userFragment.dispatchTakePictureIntent();
             }else{
-                Toast.makeText(this, "Permission was denied", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Permission to access camera was denied", Toast.LENGTH_LONG).show();
+            }
+        }else if(requestCode == LocationPermissionDialogFragment.getPermissionRequestAccessFineLocation()){
+            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                //call map fragment with my location enabled
+            }else{
+                Toast.makeText(this, "Permission to access location was denied", Toast.LENGTH_LONG).show();
             }
         }
     }
-
 }

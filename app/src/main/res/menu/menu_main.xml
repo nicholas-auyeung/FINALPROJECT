@@ -3,6 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/update_geo_button"
+        android:title="Update Geo"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/my_geo_button"
+        android:title="My Geo"
+        app:showAsAction="always"/>
+
+    <item
         android:id="@+id/geo_button"
         android:title="Geo"
         app:showAsAction="always"/>

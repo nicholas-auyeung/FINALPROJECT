@@ -22,19 +22,31 @@ public class MapsFragment extends Fragment {
     private String lat;
     private String lng;
     private String name;
+    private Boolean myGeo;
 
-    public MapsFragment(String lat, String lng, String name) {
+    public MapsFragment(String lat, String lng, String name, Boolean myGeo) {
         this.lat = lat;
         this.lng = lng;
         this.name = name;
+        this.myGeo = myGeo;
     }
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
         @Override
         public void onMapReady(GoogleMap googleMap) {
-            LatLng geo = new LatLng(Double.parseDouble(lat), Double.parseDouble(lng));
-            googleMap.addMarker(new MarkerOptions().position(geo).title("Geo of " + name));
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(geo));
+            if(myGeo){
+                try {
+                    //?
+                    googleMap.setMyLocationEnabled(true);
+                    googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+                }catch (SecurityException e){
+                    Log.e("Exception: %s", e.getMessage());
+                }
+            }else {
+                LatLng geo = new LatLng(Double.parseDouble(lat), Double.parseDouble(lng));
+                googleMap.addMarker(new MarkerOptions().position(geo).title("Geo of " + name));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLng(geo));
+            }
         }
     };
 
@@ -55,4 +67,5 @@ public class MapsFragment extends Fragment {
             mapFragment.getMapAsync(callback);
         }
     }
+
 }
