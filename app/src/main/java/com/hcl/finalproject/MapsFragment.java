@@ -36,7 +36,6 @@ public class MapsFragment extends Fragment {
         public void onMapReady(GoogleMap googleMap) {
             if(myGeo){
                 try {
-                    //?
                     googleMap.setMyLocationEnabled(true);
                     googleMap.getUiSettings().setMyLocationButtonEnabled(true);
                 }catch (SecurityException e){

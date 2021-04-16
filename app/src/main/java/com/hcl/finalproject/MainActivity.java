@@ -134,12 +134,13 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
             }else if(swapMaps){
                 swapMaps = false;
                 swapMapsFragment();
+            }else if(swapMyMaps){
+                swapMapsFragment();
             }else{
                 replaceUserFragment();
             }
         }
     }
-
 
     @Override
     public void onBackPressed(){
@@ -147,6 +148,10 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
             swapMaps = false;
             mMapState = false;
             swapUserProfileFragment(position);
+        }else if(swapMyMaps){
+            swapMyMaps = false;
+            mMyMapState = false;
+            swapUserProfileEditFragment(position);
         }else{
             swapProfileEdit = false;
             swapProfile = false;
@@ -210,18 +215,30 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
     }
 
     public void swapMapsFragment(){
-        //implement my location menu bar triggers + orientation change refresh
-        mProfileState = false;
-        swapProfile = false;
-        mMapState = true;
-        swapMaps = true;
-        invalidateOptionsMenu();
-        textHeader.setText("Geo");
-        MapsFragment mapsFragment = new MapsFragment(users.get(position).getAddress().getGeo().getLat(), users.get(position).getAddress().getGeo().getLng(), users.get(position).getName(), false);
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.frame_layout_main, mapsFragment, "maps_frame");
-        fragmentTransaction.commit();
+        if(swapMyMaps){
+            mEditState = false;
+            mMyMapState = true;
+            swapProfileEdit = false;
+            invalidateOptionsMenu();
+            textHeader.setText("My Geo");
+            MapsFragment mapsFragment = new MapsFragment(users.get(position).getAddress().getGeo().getLat(), users.get(position).getAddress().getGeo().getLng(), users.get(position).getName(), true);
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.frame_layout_main, mapsFragment, "maps_frame");
+            fragmentTransaction.commit();
+        }else{
+            mProfileState = false;
+            mMapState = true;
+            swapProfile = false;
+            swapMaps = true;
+            invalidateOptionsMenu();
+            textHeader.setText("Geo");
+            MapsFragment mapsFragment = new MapsFragment(users.get(position).getAddress().getGeo().getLat(), users.get(position).getAddress().getGeo().getLng(), users.get(position).getName(), false);
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.frame_layout_main, mapsFragment, "maps_frame");
+            fragmentTransaction.commit();
+        }
     }
 
     //sign out
@@ -330,7 +347,8 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
     //maps
     public void requestLocationPermission(){
         if(ContextCompat.checkSelfPermission(this.getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            //call map fragment with my location enabled
+            swapMyMaps = true;
+            swapMapsFragment();
         }else{
             if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)){
                 FragmentManager fm = getSupportFragmentManager();
@@ -352,7 +370,8 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
             }
         }else if(requestCode == LocationPermissionDialogFragment.getPermissionRequestAccessFineLocation()){
             if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                //call map fragment with my location enabled
+                swapMyMaps = true;
+                swapMapsFragment();
             }else{
                 Toast.makeText(this, "Permission to access location was denied", Toast.LENGTH_LONG).show();
             }
