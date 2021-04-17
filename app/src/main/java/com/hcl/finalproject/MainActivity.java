@@ -47,6 +47,7 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
 
@@ -87,6 +88,8 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
     private static boolean setup = false;
 
     private static UserFragment userFragment;
+
+    private static MapsFragment mapsFragment;
 
     private UserProfileEditFragment userProfileEditFragment;
 
@@ -198,6 +201,23 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
         }
     }
 
+    public void refreshUserProfileEditFragment(){
+        swapMyMaps = false;
+        swapProfileEdit = true;
+        mMyMapState = false;
+        mEditState = true;
+        invalidateOptionsMenu();
+        textHeader.setText("Edit Details");
+        UserProfileEditAdapter.setUserAttributeList(null);
+        objectParser = new UserParser();
+        List <UserAttribute> userAttributeList = objectParser.objectToList(users.get(position));
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        userProfileEditFragment = new UserProfileEditFragment(userAttributeList);
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frame_layout_main, userProfileEditFragment, "profile_edit_frame");
+        fragmentTransaction.commit();
+    }
+
     public void swapUserProfileFragment(int position){
         this.position = position;
         swapProfile = true;
@@ -221,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
             swapProfileEdit = false;
             invalidateOptionsMenu();
             textHeader.setText("My Geo");
-            MapsFragment mapsFragment = new MapsFragment(users.get(position).getAddress().getGeo().getLat(), users.get(position).getAddress().getGeo().getLng(), users.get(position).getName(), true);
+            mapsFragment = new MapsFragment(users.get(position).getAddress().getGeo().getLat(), users.get(position).getAddress().getGeo().getLng(), users.get(position).getName(), true);
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.frame_layout_main, mapsFragment, "maps_frame");
@@ -233,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
             swapMaps = true;
             invalidateOptionsMenu();
             textHeader.setText("Geo");
-            MapsFragment mapsFragment = new MapsFragment(users.get(position).getAddress().getGeo().getLat(), users.get(position).getAddress().getGeo().getLng(), users.get(position).getName(), false);
+            mapsFragment = new MapsFragment(users.get(position).getAddress().getGeo().getLat(), users.get(position).getAddress().getGeo().getLng(), users.get(position).getName(), false);
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.frame_layout_main, mapsFragment, "maps_frame");
@@ -322,6 +342,12 @@ public class MainActivity extends AppCompatActivity implements DataSourceCallBac
                 break;
             case(R.id.my_geo_button):
                 requestLocationPermission();
+                break;
+            case(R.id.update_geo_button):
+                users.get(position).getAddress().getGeo().setLat(mapsFragment.getLat());
+                users.get(position).getAddress().getGeo().setLng(mapsFragment.getLng());
+                refreshUserProfileEditFragment();
+                Toast.makeText(this, "Geo coordinates successfully added", Toast.LENGTH_LONG).show();
                 break;
             default:
                 break;

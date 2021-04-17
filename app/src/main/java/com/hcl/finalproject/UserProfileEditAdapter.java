@@ -96,4 +96,8 @@ public class UserProfileEditAdapter extends RecyclerView.Adapter<UserProfileEdit
     public List<UserAttribute> getUserAttributeList() {
         return userAttributeList;
     }
+
+    public static void setUserAttributeList(List<UserAttribute> userAttributeList) {
+        UserProfileEditAdapter.userAttributeList = userAttributeList;
+    }
 }
